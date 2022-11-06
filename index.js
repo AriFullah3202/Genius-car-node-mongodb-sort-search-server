@@ -61,12 +61,28 @@ async function run() {
         const result = await orderCollection.insertOne(order)
         res.send(result)
         console.log(result)
-    })
+    }) //for delete opration
     app.delete('/orders/:id', async (req, res) => {
         const id = req.params.id;
         const query = { _id: ObjectId(id) };
         const result = await orderCollection.deleteOne(query);
         res.send(result)
+    })
+    app.patch('/orders/:id', async (req, res) => {
+
+        //ekhane kon id ta updata korbo oita recieve korlam
+        const id = req.params.id;
+        // ekhane je property k update korbo oita raklam
+        const status = req.body.status;
+        const query = { _id: ObjectId(id) }
+        const updatedDoc = {
+            $set: {
+                status: status
+            }
+        }
+        //for update
+        const result = await orderCollection.updateOne(query, updatedDoc);
+        res.send(result);
     })
 
 }
