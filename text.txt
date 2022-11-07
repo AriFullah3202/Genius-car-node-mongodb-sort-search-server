@@ -1,0 +1,17 @@
+for use JWT 
+1. first install = npm install jsonwebtoken
+2. go to docs - https:github.com/auth0/node-jsonwebtoken
+3. then require ---- const jwt = require('jsonwebtoken')
+4. then terminal eita type kora  ========= require('crypto').randomBytes.toString('hex')
+5. then oita copy kore .env file e ACCESS_TOKEN_SECRET= diye save korte hbe
+6. then create a ACCESS_TOKEN_SECRET using 
+     const token = require('crypto').randomBytes(64).toString('hex')
+
+7.  app.post('/jwt', async (req, res) => {
+        //ekhane ekta email pacchi
+        const user = req.body;
+        // ekhane jwt.sign(ekahne 3ta parameter , 1. email, 2. env file er ACCESS_TOKEN_SECRET , 3. expiresIn)
+        const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1h' })
+        // ekhane send korte hbe token k send korte hbe object hishabe
+        res.send({ token })
+    })
