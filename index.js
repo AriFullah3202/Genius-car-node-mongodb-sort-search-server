@@ -15,8 +15,9 @@ require('dotenv').config();
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.wg8wdsp.mongodb.net/?retryWrites=true&w=majority`;
 console.log(uri)
-// const token = require('crypto').randomBytes(64).toString('hex')
-// console.log(token)
+
+const token = require('crypto').randomBytes(64).toString('hex')
+console.log(token)
 
 
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
@@ -45,14 +46,35 @@ async function run() {
 
     app.post('/jwt', async (req, res) => {
         const user = req.body;
-        const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '5' })
+        const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '5d' })
         res.send({ token })
     })
 
 
     app.get('/services', async (req, res) => {
-        const query = {};
-        const cursor = serviceCollection.find(query);
+        // gt - holo greater then 
+        //lt - holo less then
+        //
+        // const query = { price: { $lt: 100 , $lt: 300 } };
+        // eti greate then or epual 
+        // const query = {price : {$gte : 200} }
+        // $lte hole less then equal to
+        // $in holo give me price value 20 , 40 and 150
+        // const query = {price : {$in : [20 , 40 , 150]}}
+        // $nin holo not in eta eita 30 , 20 ei value chara baki gola daw
+        // const query = {price : {$nin : [30, 20]}}
+        // const query = {price : 
+        // asc jodi equal hole 1 na hole -1
+        // 
+
+
+        // Logical operator and opration  ekhane greater then 20 and 100 er beshi hole dibe
+        // const query = {$and : [{price ; {$gt : 20}} , {price : {$gt : 100}}]}
+        // hoy eita lagbe or oita 2ta er modhe jkhono  ekta 
+        // const query = {$nor : [{price ; {$gt : 20}} , {price : {$gt : 100}}]}
+        const query = {}
+        const order = req.query.order === 'asc' ? 1 : -1;
+        const cursor = serviceCollection.find(query).sort({ price: order });
         const services = await cursor.toArray();
         res.send(services)
     })
