@@ -52,10 +52,12 @@ async function run() {
 
 
     app.get('/services', async (req, res) => {
+        const search = req.query.search;
+
         // gt - holo greater then 
         //lt - holo less then
         //
-        // const query = { price: { $lt: 100 , $lt: 300 } };
+        //const query = { price: { $lt: 100 , $lt: 300 } };
         // eti greate then or epual 
         // const query = {price : {$gte : 200} }
         // $lte hole less then equal to
@@ -72,7 +74,36 @@ async function run() {
         // const query = {$and : [{price ; {$gt : 20}} , {price : {$gt : 100}}]}
         // hoy eita lagbe or oita 2ta er modhe jkhono  ekta 
         // const query = {$nor : [{price ; {$gt : 20}} , {price : {$gt : 100}}]}
-        const query = {}
+
+
+        // for Searching
+        // step 
+        // 1. go to database mongodb and then colection
+        //2. then to go index option 
+        //3. then ekta field r ekta text dite hobe
+        //4. then confirm
+        // go to google and search mongodb search text contains in a field
+
+        // const search = req.query.search
+        // console.log(search)
+        // const query = {
+        //     $text: {
+        //         $search: search
+        //     }
+        // }
+        // case 2
+        // jodi search er moddhe kono kichu an di thahole kono kichu asshe na 
+        // tai search.leangh dite hbe
+        let query = {}
+        if (search.length) {
+            query = {
+                $text: {
+                    $search: search
+                }
+            }
+        }
+
+
         const order = req.query.order === 'asc' ? 1 : -1;
         const cursor = serviceCollection.find(query).sort({ price: order });
         const services = await cursor.toArray();
